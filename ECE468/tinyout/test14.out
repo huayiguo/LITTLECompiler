@@ -1,0 +1,19 @@
+;IR code
+;tiny code
+var i
+var a
+var b
+var c
+var x
+var y
+var z
+var h
+str s1 "string"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+end

@@ -1,0 +1,205 @@
+;IR code
+;LABEL main
+;LINK
+;ADDI a b $T1
+;STOREI $T1 c
+;MULTI g j $T2
+;MULTI i o $T3
+;ADDI $T2 $T3 $T4
+;MULTI p l $T5
+;ADDI $T4 $T5 $T6
+;ADDI $T6 a $T7
+;MULTI h j $T8
+;ADDI $T7 $T8 $T9
+;ADDI $T9 k $T10
+;STOREI $T10 b
+;MULTI a b $T11
+;ADDI $T11 i $T12
+;MULTI p p $T13
+;ADDI $T12 $T13 $T14
+;ADDI $T14 h $T15
+;ADDI $T15 j $T16
+;ADDI $T16 k $T17
+;ADDI $T17 i $T18
+;MULTI y u $T19
+;DIVI $T19 r $T20
+;ADDI $T18 $T19 $T21
+;STOREI $T21 c
+;ADDI a b $T22
+;STOREI $T22 $R
+;RET
+
+;tiny code
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;LABEL main	 live vars: a, b, g, j, i, o, p, l, h, k, y, u, r, 
+label main
+;LINK	 live vars: a, b, g, j, i, o, p, l, h, k, y, u, r, 
+link 22
+;ADDI a b $T1	 live vars: $T1, g, j, i, o, p, l, a, h, k, y, u, r, 
+;ensure(): $T1 gets register r3 { r0->null r1->null r2->null r3->$T1 }
+addi b r3
+;STOREI $T1 c	 live vars: g, j, i, o, p, l, a, h, k, y, u, r, 
+;ensure(): $T1 has register r3 { r0->null r1->null r2->null r3->$T1 }
+move r3 c
+;Freeing unused variable $T1
+;Spilling variable: $T1
+move r3 $-1
+;MULTI g j $T2	 live vars: i, o, $T2, p, l, a, h, j, k, y, u, r, 
+;ensure(): $T2 gets register r3 { r0->null r1->null r2->null r3->$T2 }
+muli j r3
+;MULTI i o $T3	 live vars: $T2, $T3, p, l, a, h, j, k, i, y, u, r, 
+;ensure(): $T3 gets register r2 { r0->null r1->null r2->$T3 r3->$T2 }
+muli o r2
+;ADDI $T2 $T3 $T4	 live vars: p, l, $T4, a, h, j, k, i, y, u, r, 
+;ensure(): $T2 has register r3 { r0->null r1->null r2->$T3 r3->$T2 }
+;ensure(): $T3 has register r2 { r0->null r1->null r2->$T3 r3->$T2 }
+;Switching owner of register r3 to $T4 { r0->null r1->null r2->$T3 r3->$T2 }
+;Spilling variable: $T2
+move r3 $-2
+addi r2 r3
+;Freeing unused variable $T3
+;Spilling variable: $T3
+move r2 $-3
+;MULTI p l $T5	 live vars: $T4, $T5, a, h, j, k, i, p, y, u, r, 
+;ensure(): $T5 gets register r2 { r0->null r1->null r2->$T5 r3->$T4 }
+muli l r2
+;ADDI $T4 $T5 $T6	 live vars: $T6, a, h, j, k, i, p, y, u, r, 
+;ensure(): $T4 has register r3 { r0->null r1->null r2->$T5 r3->$T4 }
+;ensure(): $T5 has register r2 { r0->null r1->null r2->$T5 r3->$T4 }
+;Switching owner of register r3 to $T6 { r0->null r1->null r2->$T5 r3->$T4 }
+;Spilling variable: $T4
+move r3 $-4
+addi r2 r3
+;Freeing unused variable $T5
+;Spilling variable: $T5
+move r2 $-5
+;ADDI $T6 a $T7	 live vars: h, j, $T7, k, a, i, p, y, u, r, 
+;ensure(): $T6 has register r3 { r0->null r1->null r2->null r3->$T6 }
+;ensure(): $T7 gets register r2 { r0->null r1->null r2->$T7 r3->$T6 }
+addi a r2
+;Freeing unused variable $T6
+;Spilling variable: $T6
+move r3 $-6
+;MULTI h j $T8	 live vars: $T7, $T8, k, a, i, p, h, j, y, u, r, 
+;ensure(): $T8 gets register r3 { r0->null r1->null r2->$T7 r3->$T8 }
+muli j r3
+;ADDI $T7 $T8 $T9	 live vars: $T9, k, a, i, p, h, j, y, u, r, 
+;ensure(): $T7 has register r2 { r0->null r1->null r2->$T7 r3->$T8 }
+;ensure(): $T8 has register r3 { r0->null r1->null r2->$T7 r3->$T8 }
+;Switching owner of register r2 to $T9 { r0->null r1->null r2->$T7 r3->$T8 }
+;Spilling variable: $T7
+move r2 $-7
+addi r3 r2
+;Freeing unused variable $T8
+;Spilling variable: $T8
+move r3 $-8
+;ADDI $T9 k $T10	 live vars: $T10, a, i, p, h, j, k, y, u, r, 
+;ensure(): $T9 has register r2 { r0->null r1->null r2->$T9 r3->null }
+;ensure(): $T10 gets register r3 { r0->null r1->null r2->$T9 r3->$T10 }
+addi k r3
+;Freeing unused variable $T9
+;Spilling variable: $T9
+move r2 $-9
+;STOREI $T10 b	 live vars: a, b, i, p, h, j, k, y, u, r, 
+;ensure(): $T10 has register r3 { r0->null r1->null r2->null r3->$T10 }
+move r3 b
+;Freeing unused variable $T10
+;Spilling variable: $T10
+move r3 $-10
+;MULTI a b $T11	 live vars: $T11, i, p, h, j, k, y, u, r, a, b, 
+;ensure(): $T11 gets register r3 { r0->null r1->null r2->null r3->$T11 }
+muli b r3
+;ADDI $T11 i $T12	 live vars: p, $T12, h, j, k, i, y, u, r, a, b, 
+;ensure(): $T11 has register r3 { r0->null r1->null r2->null r3->$T11 }
+;ensure(): $T12 gets register r2 { r0->null r1->null r2->$T12 r3->$T11 }
+addi i r2
+;Freeing unused variable $T11
+;Spilling variable: $T11
+move r3 $-11
+;MULTI p p $T13	 live vars: $T12, $T13, h, j, k, i, y, u, r, a, b, 
+;ensure(): $T13 gets register r3 { r0->null r1->null r2->$T12 r3->$T13 }
+muli p r3
+;ADDI $T12 $T13 $T14	 live vars: $T14, h, j, k, i, y, u, r, a, b, 
+;ensure(): $T12 has register r2 { r0->null r1->null r2->$T12 r3->$T13 }
+;ensure(): $T13 has register r3 { r0->null r1->null r2->$T12 r3->$T13 }
+;Switching owner of register r2 to $T14 { r0->null r1->null r2->$T12 r3->$T13 }
+;Spilling variable: $T12
+move r2 $-12
+addi r3 r2
+;Freeing unused variable $T13
+;Spilling variable: $T13
+move r3 $-13
+;ADDI $T14 h $T15	 live vars: $T15, j, k, i, y, u, r, a, b, 
+;ensure(): $T14 has register r2 { r0->null r1->null r2->$T14 r3->null }
+;ensure(): $T15 gets register r3 { r0->null r1->null r2->$T14 r3->$T15 }
+addi h r3
+;Freeing unused variable $T14
+;Spilling variable: $T14
+move r2 $-14
+;ADDI $T15 j $T16	 live vars: $T16, k, i, y, u, r, a, b, 
+;ensure(): $T15 has register r3 { r0->null r1->null r2->null r3->$T15 }
+;ensure(): $T16 gets register r2 { r0->null r1->null r2->$T16 r3->$T15 }
+addi j r2
+;Freeing unused variable $T15
+;Spilling variable: $T15
+move r3 $-15
+;ADDI $T16 k $T17	 live vars: $T17, i, y, u, r, a, b, 
+;ensure(): $T16 has register r2 { r0->null r1->null r2->$T16 r3->null }
+;ensure(): $T17 gets register r3 { r0->null r1->null r2->$T16 r3->$T17 }
+addi k r3
+;Freeing unused variable $T16
+;Spilling variable: $T16
+move r2 $-16
+;ADDI $T17 i $T18	 live vars: y, u, r, $T18, a, b, 
+;ensure(): $T17 has register r3 { r0->null r1->null r2->null r3->$T17 }
+;ensure(): $T18 gets register r2 { r0->null r1->null r2->$T18 r3->$T17 }
+addi i r2
+;Freeing unused variable $T17
+;Spilling variable: $T17
+move r3 $-17
+;MULTI y u $T19	 live vars: $T19, r, $T18, a, b, 
+;ensure(): $T19 gets register r3 { r0->null r1->null r2->$T18 r3->$T19 }
+muli u r3
+;DIVI $T19 r $T20	 live vars: $T18, $T19, a, b, 
+;ensure(): $T19 has register r3 { r0->null r1->null r2->$T18 r3->$T19 }
+;ensure(): $T20 gets register r1 { r0->null r1->$T20 r2->$T18 r3->$T19 }
+divi r r1
+;Freeing unused variable $T20
+;Spilling variable: $T20
+move r1 $-20
+;ADDI $T18 $T19 $T21	 live vars: $T21, a, b, 
+;ensure(): $T18 has register r2 { r0->null r1->null r2->$T18 r3->$T19 }
+;ensure(): $T19 has register r3 { r0->null r1->null r2->$T18 r3->$T19 }
+;Switching owner of register r2 to $T21 { r0->null r1->null r2->$T18 r3->$T19 }
+;Spilling variable: $T18
+move r2 $-18
+addi r3 r2
+;Freeing unused variable $T19
+;Spilling variable: $T19
+move r3 $-19
+;STOREI $T21 c	 live vars: a, b, 
+;ensure(): $T21 has register r2 { r0->null r1->null r2->$T21 r3->null }
+move r2 c
+;Freeing unused variable $T21
+;Spilling variable: $T21
+move r2 $-21
+;ADDI a b $T22	 live vars: $T22, 
+;ensure(): $T22 gets register r3 { r0->null r1->null r2->null r3->$T22 }
+addi b r3
+;STOREI $T22 $R	 live vars: 
+;ensure(): $T22 has register r3 { r0->null r1->null r2->null r3->$T22 }
+move r3 $6
+;Freeing unused variable $T22
+;Spilling variable: $T22
+move r3 $-22
+;RET	 live vars: 
+unlnk
+ret
+;Spilling registers at the end of the Basic Block
+end

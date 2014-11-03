@@ -1,0 +1,263 @@
+;IR code
+;LABEL main
+;LINK
+;STOREF 0.001 $T1
+;STOREF $T1 error
+;READF x1
+;MULTF x1 x1 $T2
+;SUBF $T2 n $T3
+;STOREF $T3 fx
+;STOREF 2.0 $T4
+;MULTF $T4 x1 $T5
+;STOREF $T5 dfx
+;DIVF fx dfx $T6
+;SUBF x1 $T6 $T7
+;STOREF $T7 x2
+;LABEL label1
+;STOREF error $L1
+;STOREF x2 x1
+;MULTF x1 x1 $T8
+;SUBF $T8 n $T9
+;STOREF $T9 fx
+;STOREF 2.0 $T10
+;MULTF $T10 x1 $T11
+;STOREF $T11 dfx
+;DIVF fx dfx $T12
+;SUBF x1 $T12 $T13
+;STOREF $T13 x2
+;LABEL label3
+;SUBF x1 x2 $T14
+;LT $T14 error1 label2
+;JUMP label1
+;LABEL label2
+;WRITEF x2
+;RET
+;tiny code
+str dummy "abcde"
+var n
+var x1
+var x2
+var fx
+var dfx
+var error
+var i
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;LABEL main	 live vars: n, error1, 
+label main
+;LINK	 live vars: n, error1, 
+link 14
+;STOREF 0.001 $T1	 live vars: $T1, n, error1, 
+;ensure(): $T1 gets register r3 { r0->null r1->null r2->null r3->$T1 }
+move 0.001 r3
+;STOREF $T1 error	 live vars: n, error, error1, 
+;ensure(): $T1 has register r3 { r0->null r1->null r2->null r3->$T1 }
+;ensure(): error gets register r2 { r0->null r1->null r2->error r3->$T1 }
+move r3 r2
+;Freeing unused variable $T1
+;Spilling variable: $T1
+move r3 $-1
+;READF x1	 live vars: x1, n, error, error1, 
+;ensure(): x1 gets register r3 { r0->null r1->null r2->error r3->x1 }
+sys readr r3
+;MULTF x1 x1 $T2	 live vars: $T2, n, x1, error, error1, 
+;ensure(): x1 has register r3 { r0->null r1->null r2->error r3->x1 }
+;ensure(): x1 has register r3 { r0->null r1->null r2->error r3->x1 }
+;Switching owner of register r3 to $T2 { r0->null r1->null r2->error r3->x1 }
+;Spilling variable: x1
+move r3 x1
+mulr r3 r3
+;SUBF $T2 n $T3	 live vars: $T3, x1, error, n, error1, 
+;ensure(): $T2 has register r3 { r0->null r1->null r2->error r3->$T2 }
+;ensure(): n gets register r1 { r0->null r1->n r2->error r3->$T2 }
+;loading n to register r1
+move n r1
+;Switching owner of register r3 to $T3 { r0->null r1->n r2->error r3->$T2 }
+;Spilling variable: $T2
+move r3 $-2
+subr r1 r3
+;STOREF $T3 fx	 live vars: x1, fx, error, n, error1, 
+;ensure(): $T3 has register r3 { r0->null r1->n r2->error r3->$T3 }
+;ensure(): fx gets register r0 { r0->fx r1->n r2->error r3->$T3 }
+move r3 r0
+;Freeing unused variable $T3
+;Spilling variable: $T3
+move r3 $-3
+;STOREF 2.0 $T4	 live vars: $T4, x1, fx, error, n, error1, 
+;ensure(): $T4 gets register r3 { r0->fx r1->n r2->error r3->$T4 }
+move 2.0 r3
+;MULTF $T4 x1 $T5	 live vars: $T5, fx, x1, error, n, error1, 
+;ensure(): $T4 has register r3 { r0->fx r1->n r2->error r3->$T4 }
+;allocate() has to spill n
+;ensure(): x1 gets register r1 { r0->fx r1->x1 r2->error r3->$T4 }
+;loading x1 to register r1
+move x1 r1
+;Switching owner of register r3 to $T5 { r0->fx r1->x1 r2->error r3->$T4 }
+;Spilling variable: $T4
+move r3 $-4
+mulr r1 r3
+;STOREF $T5 dfx	 live vars: fx, dfx, x1, error, n, error1, 
+;ensure(): $T5 has register r3 { r0->fx r1->x1 r2->error r3->$T5 }
+;allocate() has to spill error
+;Spilling variable: error
+move r2 error
+;ensure(): dfx gets register r2 { r0->fx r1->x1 r2->dfx r3->$T5 }
+move r3 r2
+;Freeing unused variable $T5
+;Spilling variable: $T5
+move r3 $-5
+;DIVF fx dfx $T6	 live vars: x1, $T6, error, n, error1, 
+;ensure(): fx has register r0 { r0->fx r1->x1 r2->dfx r3->null }
+;ensure(): dfx has register r2 { r0->fx r1->x1 r2->dfx r3->null }
+;Switching owner of register r0 to $T6 { r0->fx r1->x1 r2->dfx r3->null }
+;Spilling variable: fx
+move r0 fx
+divr r2 r0
+;Freeing unused variable dfx
+;Spilling variable: dfx
+move r2 dfx
+;SUBF x1 $T6 $T7	 live vars: $T7, error, n, error1, 
+;ensure(): x1 has register r1 { r0->$T6 r1->x1 r2->null r3->null }
+;ensure(): $T6 has register r0 { r0->$T6 r1->x1 r2->null r3->null }
+;Switching owner of register r1 to $T7 { r0->$T6 r1->x1 r2->null r3->null }
+subr r0 r1
+;Freeing unused variable $T6
+;Spilling variable: $T6
+move r0 $-6
+;STOREF $T7 x2	 live vars: error, x2, n, error1, 
+;ensure(): $T7 has register r1 { r0->null r1->$T7 r2->null r3->null }
+;ensure(): x2 gets register r3 { r0->null r1->$T7 r2->null r3->x2 }
+move r1 r3
+;Freeing unused variable $T7
+;Spilling variable: $T7
+move r1 $-7
+;Spilling registers at the end of the Basic Block
+;Spilling variable: x2
+move r3 x2
+;LABEL label1	 live vars: error, x2, n, error1, 
+label label1
+;STOREF error $L1	 live vars: x2, n, error1, error, 
+;ensure(): error gets register r3 { r0->null r1->null r2->null r3->error }
+;loading error to register r3
+move error r3
+;ensure(): $L1 gets register r2 { r0->null r1->null r2->$L1 r3->error }
+move r3 r2
+;Freeing unused variable $L1
+;Spilling variable: $L1
+move r2 $-1
+;STOREF x2 x1	 live vars: x1, n, error1, error, 
+;ensure(): x2 gets register r2 { r0->null r1->null r2->x2 r3->error }
+;loading x2 to register r2
+move x2 r2
+;ensure(): x1 gets register r1 { r0->null r1->x1 r2->x2 r3->error }
+move r2 r1
+;Freeing unused variable x2
+;MULTF x1 x1 $T8	 live vars: $T8, n, x1, error1, error, 
+;ensure(): x1 has register r1 { r0->null r1->x1 r2->null r3->error }
+;ensure(): x1 has register r1 { r0->null r1->x1 r2->null r3->error }
+;Switching owner of register r1 to $T8 { r0->null r1->x1 r2->null r3->error }
+;Spilling variable: x1
+move r1 x1
+mulr r1 r1
+;SUBF $T8 n $T9	 live vars: $T9, x1, error1, error, n, 
+;ensure(): $T8 has register r1 { r0->null r1->$T8 r2->null r3->error }
+;ensure(): n gets register r2 { r0->null r1->$T8 r2->n r3->error }
+;loading n to register r2
+move n r2
+;Switching owner of register r1 to $T9 { r0->null r1->$T8 r2->n r3->error }
+;Spilling variable: $T8
+move r1 $-8
+subr r2 r1
+;STOREF $T9 fx	 live vars: x1, fx, error1, error, n, 
+;ensure(): $T9 has register r1 { r0->null r1->$T9 r2->n r3->error }
+;ensure(): fx gets register r0 { r0->fx r1->$T9 r2->n r3->error }
+move r1 r0
+;Freeing unused variable $T9
+;Spilling variable: $T9
+move r1 $-9
+;STOREF 2.0 $T10	 live vars: $T10, x1, fx, error1, error, n, 
+;ensure(): $T10 gets register r1 { r0->fx r1->$T10 r2->n r3->error }
+move 2.0 r1
+;MULTF $T10 x1 $T11	 live vars: $T11, fx, x1, error1, error, n, 
+;ensure(): $T10 has register r1 { r0->fx r1->$T10 r2->n r3->error }
+;allocate() has to spill n
+;ensure(): x1 gets register r2 { r0->fx r1->$T10 r2->x1 r3->error }
+;loading x1 to register r2
+move x1 r2
+;Switching owner of register r1 to $T11 { r0->fx r1->$T10 r2->x1 r3->error }
+;Spilling variable: $T10
+move r1 $-10
+mulr r2 r1
+;STOREF $T11 dfx	 live vars: fx, dfx, x1, error1, error, n, 
+;ensure(): $T11 has register r1 { r0->fx r1->$T11 r2->x1 r3->error }
+;allocate() has to spill error
+;ensure(): dfx gets register r3 { r0->fx r1->$T11 r2->x1 r3->dfx }
+move r1 r3
+;Freeing unused variable $T11
+;Spilling variable: $T11
+move r1 $-11
+;DIVF fx dfx $T12	 live vars: x1, $T12, error1, error, n, 
+;ensure(): fx has register r0 { r0->fx r1->null r2->x1 r3->dfx }
+;ensure(): dfx has register r3 { r0->fx r1->null r2->x1 r3->dfx }
+;Switching owner of register r0 to $T12 { r0->fx r1->null r2->x1 r3->dfx }
+;Spilling variable: fx
+move r0 fx
+divr r3 r0
+;Freeing unused variable dfx
+;Spilling variable: dfx
+move r3 dfx
+;SUBF x1 $T12 $T13	 live vars: $T13, x1, error1, error, n, 
+;ensure(): x1 has register r2 { r0->$T12 r1->null r2->x1 r3->null }
+;ensure(): $T12 has register r0 { r0->$T12 r1->null r2->x1 r3->null }
+;Switching owner of register r2 to $T13 { r0->$T12 r1->null r2->x1 r3->null }
+subr r0 r2
+;Freeing unused variable $T12
+;Spilling variable: $T12
+move r0 $-12
+;STOREF $T13 x2	 live vars: x1, x2, error1, error, n, 
+;ensure(): $T13 has register r2 { r0->null r1->null r2->$T13 r3->null }
+;ensure(): x2 gets register r3 { r0->null r1->null r2->$T13 r3->x2 }
+move r2 r3
+;Freeing unused variable $T13
+;Spilling variable: $T13
+move r2 $-13
+;LABEL label3	 live vars: x1, x2, error1, error, n, 
+label label3
+;SUBF x1 x2 $T14	 live vars: $T14, error1, x2, error, n, 
+;ensure(): x1 gets register r2 { r0->null r1->null r2->x1 r3->x2 }
+;loading x1 to register r2
+move x1 r2
+;ensure(): x2 has register r3 { r0->null r1->null r2->x1 r3->x2 }
+;Switching owner of register r2 to $T14 { r0->null r1->null r2->x1 r3->x2 }
+subr r3 r2
+;LT $T14 error1 label2	 live vars: x2, error, n, error1, 
+;ensure(): $T14 has register r2 { r0->null r1->null r2->$T14 r3->x2 }
+cmpr r2 error1
+;Freeing unused variable $T14
+;Spilling variable: $T14
+move r2 $-14
+;Spilling registers at the end of the Basic Block
+;Spilling variable: x2
+move r3 x2
+jlt label2
+;JUMP label1	 live vars: error, x2, n, error1, 
+;Spilling registers at the end of the Basic Block
+jmp label1
+;LABEL label2	 live vars: x2, 
+label label2
+;WRITEF x2	 live vars: 
+;ensure(): x2 gets register r3 { r0->null r1->null r2->null r3->x2 }
+;loading x2 to register r3
+move x2 r3
+sys writer r3
+;Freeing unused variable x2
+;RET	 live vars: 
+unlnk
+ret
+;Spilling registers at the end of the Basic Block
+end
